@@ -2,10 +2,21 @@
   // Objekt pro uložení jazykových řetězců
   var lang = {};
 
+  // Funkce pro zjištění základní cesty k editor.js
+  function getBasePath() {
+    var scriptTags = document.getElementsByTagName('script');
+    var currentScript = document.currentScript || scriptTags[scriptTags.length - 1];
+    var scriptSrc = currentScript.src;
+    var basePath = scriptSrc.substring(0, scriptSrc.lastIndexOf('/'));
+    return basePath;
+  }
+
+  var basePath = getBasePath();
+
   // Funkce pro načtení souboru lang.ini
   function loadLanguageFile(callback) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', './lang.ini', true);
+    xhr.open('GET', basePath + '/lang.ini', true);
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
@@ -34,7 +45,7 @@
     loadLanguageFile(function() {
       // Získání typu zdroje (html nebo wiki)
       var scripts = document.getElementsByTagName('script');
-      var currentScript = scripts[scripts.length - 1];
+      var currentScript = document.currentScript || scripts[scripts.length - 1];
       var sourceType = currentScript.getAttribute('source') || 'html';
 
       var textarea = document.getElementById('editor');
@@ -92,7 +103,7 @@
           return; // Nepřidávat tlačítko, pokud není povoleno
         }
         var button = document.createElement('button');
-        button.style.backgroundImage = 'url(./img/' + iconName + ')';
+        button.style.backgroundImage = 'url(' + basePath + '/img/' + iconName + ')';
         button.style.backgroundSize = iconSize + 'px ' + iconSize + 'px';
         button.style.width = iconSize + 'px';
         button.style.height = iconSize + 'px';
@@ -392,4 +403,3 @@
     });
   });
 })();
-
